@@ -1,4 +1,4 @@
-obj-m += sbd.o
+obj-m += sbd.o bad_iosched.o
 
 export KROOT=/lib/modules/`uname -r`/build
 
