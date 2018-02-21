@@ -1,4 +1,4 @@
-obj-m += my_proc.o my_new_proc.o sig_proc.o
+obj-m += my_proc.o my_new_proc.o sig_proc.o my_sysfs.o
 
 export KROOT=/lib/modules/`uname -r`/build
 
