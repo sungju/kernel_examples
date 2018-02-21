@@ -3,7 +3,7 @@
 #include <linux/module.h>
 #include <linux/cdev.h>
 #include <linux/fs.h>
-#include <asm/uaccess.h>
+#include <linux/uaccess.h>
 #include <asm/io.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
@@ -116,7 +116,8 @@ void morse(char *cp, int minor_no)
 ssize_t m_write(struct file *filp, const char *buffer,
     size_t length, loff_t * offset)
 {
-  struct inode *inode = filp->f_dentry->d_inode;
+//  struct inode *inode = filp->f_dentry->d_inode;
+  struct inode *inode = filp->f_path.dentry->d_inode;
   int minor_no = MINOR(inode->i_rdev) + 1;
 
   char *data = (char *)kmalloc(length, GFP_KERNEL);
