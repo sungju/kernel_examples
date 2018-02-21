@@ -3,7 +3,7 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
-#include <asm/uaccess.h>
+#include <linux/uaccess.h>
 #include <linux/init.h>
 
 #define NODE_DIR	"my_proc_dir"

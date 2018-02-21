@@ -3,8 +3,10 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
-#include <asm/uaccess.h>
+#include <linux/uaccess.h>
 #include <linux/init.h>
+#include <linux/signal.h>
+#include <linux/signalfd.h>
 #include <asm/switch_to.h>
 
 #define NODE_DIR	"my_sig_dir"

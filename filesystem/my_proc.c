@@ -3,7 +3,7 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
-#include <asm/uaccess.h>
+#include <linux/uaccess.h>
 
 #define NODE	"myproc"
 
@@ -63,3 +63,5 @@ void __exit my_exit(void)
 
 module_init(my_init);
 module_exit(my_exit);
+
+MODULE_LICENSE("GPL");
