@@ -6,10 +6,11 @@
 MODULE_LICENSE("GPL");
 
 #define BCM2835_NUM_GPIOS 54
-int gpio_no = (ARCH_NR_GPIOS - BCM2835_NUM_GPIOS) + 18;
+int gpio_no = 18;
 module_param(gpio_no, int, 0);
 
 static int __init my_init(void) {
+  gpio_no = (ARCH_NR_GPIOS - BCM2835_NUM_GPIOS) + gpio_no;
 	if (!gpio_is_valid(gpio_no)) {
 		printk(KERN_INFO "This is invalid GPIO\n");
 		return -ENODEV;

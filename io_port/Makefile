@@ -1,4 +1,4 @@
-obj-m += morse_io.o gpio_legacy_led.o
+obj-m += morse_io.o gpio_legacy_led.o gpio_led.o
 
 export KROOT=/lib/modules/`uname -r`/build
 
