@@ -5,7 +5,7 @@
 
 MODULE_LICENSE("GPL");
 
-int gpio_no = 18;
+int gpio_no = (ARCH_NR_GPIOS - 54) + 18;
 module_param(gpio_no, int, 0);
 
 static int __init my_init(void) {
