@@ -1,4 +1,4 @@
-obj-m += kprobe_test.o jprobe_test.o
+obj-m += kprobe_test.o jprobe_test.o efi_reboot_monitor.o
 
 export KROOT=/lib/modules/`uname -r`/build
 
