@@ -63,7 +63,11 @@ void __exit my_exit(void)
 {
   if (orig_open != NULL)
     sys_call_table[__NR_open] = (syscall_handler_t *)orig_open;
+
+ /* It looks causing a crash in my system */
+  /*
   write_cr0(read_cr0() | (~0xfffeffff));
+  */
 }
 
 module_init(my_init);
