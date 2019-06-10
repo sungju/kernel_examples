@@ -5,7 +5,8 @@
 #include <asm/unistd.h>
 #include <linux/uaccess.h>
 #include <linux/sched.h>
-#include <linux/syscalls.h> 
+#include <linux/syscalls.h>
+#include <linux/kallsyms.h>
 
 unsigned long syscall_addr;
 module_param(syscall_addr, ulong, 0);
@@ -32,6 +33,9 @@ asmlinkage long myopen(const char __user *filename, int flags, umode_t mode)
 int __init my_init(void)
 {
   int i;
+  if (syscall_addr == 0) {
+     syscall_addr = kallsyms_lookup_name("sys_call_table");
+  }
   sys_call_table = (void *)syscall_addr;
 
   for (i = 0; i < 20; i++) {
@@ -39,6 +43,7 @@ int __init my_init(void)
   }
   printk("open is at %d = %p\n", __NR_open, sys_call_table[__NR_open]);
   orig_open = (void *)sys_call_table[__NR_open];
+  /* Below can cause of crash in latest kernel as the table is protected */
   sys_call_table[__NR_open] = (syscall_handler_t *)myopen;
 
   return 0;
@@ -46,7 +51,8 @@ int __init my_init(void)
 
 void __exit my_exit(void)
 {
-  sys_call_table[__NR_open] = (syscall_handler_t *)orig_open;
+  if (orig_open != NULL)
+    sys_call_table[__NR_open] = (syscall_handler_t *)orig_open;
 }
 
 module_init(my_init);
