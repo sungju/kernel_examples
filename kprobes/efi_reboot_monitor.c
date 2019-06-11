@@ -83,6 +83,7 @@ static struct jprobe my_jprobe_native_machine_crash_shutdown = {
 	       },
 };
 
+/*
 void my_efi_call(void *args)
 {
 	printk(KERN_ERR "HR: ec();\n");
@@ -95,7 +96,7 @@ static struct jprobe my_jprobe_efi_call = {
 	       .symbol_name = "efi_call",
 	       },
 };
-
+*/
 
 char efi_name[50];
 void set_efi_name(efi_char16_t * msg)
@@ -147,7 +148,14 @@ efi_status_t my_virt_efi_get_variable(efi_char16_t * name,
 {
 	set_efi_name(name);
 	set_guid(vendor);
-	printk(KERN_ERR "HR: vegv(), name : %s-%s\n", efi_name, vendor_guid);
+	printk(KERN_ERR "HR: vegv(), name : %s-%s", efi_name, vendor_guid);
+	if (data != NULL) {
+		struct page *page = virt_to_page(data);
+		printk(", data = 0x%p, page = 0x%p, page->flags = 0x%lx (%svalid slab)", data, page, page->flags, (page->flags & 0x80) == 0x80 ? "" : "in");
+	}
+	if (data_size != NULL)
+		printk(", data_size = %ld", *data_size);
+	printk("\n");
 	jprobe_return();
 	return 0;
 }
@@ -167,6 +175,12 @@ efi_status_t my_virt_efi_set_variable(efi_char16_t * name,
 	set_efi_name(name);
 	set_guid(vendor);
 	printk(KERN_ERR "HR: vesv(), name : %s-%s\n", efi_name, vendor_guid);
+	if (data != NULL) {
+		struct page *page = virt_to_page(data);
+		printk(", data = 0x%p, page = 0x%p, page->flags = 0x%lx (%svalid slab)", data, page, page->flags, (page->flags & 0x80) == 0x80 ? "" : "in");
+	}
+	if (data_size != NULL)
+		printk(", data_size = %ld", *data_size);
 	jprobe_return();
 	return 0;
 }
@@ -276,8 +290,11 @@ static struct jprobe *jps[NUMJP] = { &jp1, &jp2, &jp3,
 	&my_jprobe_native_machine_restart,
 	&my_jprobe_native_machine_halt,
 	&my_jprobe_native_machine_crash_shutdown,
+/*
 	&my_jprobe_efi_call,
+*/
 	&my_jprobe_virt_efi_get_variable,
+
 	&my_jprobe_virt_efi_set_variable
 };
 
@@ -286,6 +303,8 @@ int register_jprobe_list(void)
 	int i, j, ret;
 
 	for (i = 0; i < NUMJP; i++) {
+		if (jps[i] == NULL)
+			continue;
 		ret = register_jprobe(jps[i]);
 		if (ret != 0) {
 			for (j = i - 1; j >= 0; j--)
@@ -308,6 +327,8 @@ void unregister_jprobe_list(void)
 	int i;
 
 	for (i = 0; i < NUMJP; i++) {
+		if (jps[i] == NULL)
+			continue;
 		if (jps[i]->kp.addr != 0) {
 			unregister_jprobe(jps[i]);
 			printk(KERN_ERR
