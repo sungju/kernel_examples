@@ -1,4 +1,4 @@
-obj-m += sema_mod1.o sema_mod2.o
+obj-m += sema_mod1.o sema_mod2.o spindead.o
 
 export KROOT=/lib/modules/`uname -r`/build
 
@@ -8,4 +8,4 @@ modules:
 modules_install:
 	@$(MAKE) -C $(KROOT) M=$(PWD) modules_install
 clean:
-	rm -rf   *.o *.ko .*cmd *.mod.c .tmp_versions .*.d .*.tmp Module.symvers modules.order
+	rm -rf   *.o *.ko .*cmd *.mod *.mod.c .tmp_versions .*.d .*.tmp Module.symvers modules.order
