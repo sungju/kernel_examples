@@ -14,6 +14,7 @@ static struct kprobe kp;
 static int handler_pre(struct kprobe *p, struct pt_regs *regs)
 {
 	printk("pre_handler called before p->addr=0x%p\n", p->addr);
+	printk("pt_regs.flags = 0x%lx\n", regs->flags);
 	dump_stack();
 	return 0;
 }
@@ -34,6 +35,8 @@ static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
 
 static int __init my_init(void)
 {
+	int ret;
+
 	if (address == 0 && (name == 0 || strlen(name) == 0)) {
 		printk
 		    ("Target function is not specified. Please use address or name to monitoring it\n");
@@ -55,8 +58,9 @@ static int __init my_init(void)
 
 	kp.addr = (kprobe_opcode_t *) address;
 
-	if (register_kprobe(&kp)) {
-		printk("Can't register kprobe on %s\n", name);
+	ret = register_kprobe(&kp);
+	if (ret) {
+		printk("Can't register kprobe on %s : %d\n", name, ret);
 		return -1;
 	}
 	printk("Hello, kprobe is registered\n");

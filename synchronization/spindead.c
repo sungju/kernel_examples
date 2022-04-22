@@ -50,9 +50,9 @@ int spintest_fn(void *data) {
 	spin_lock(&wrong_lock);
 	count++;
 	if (count == 1) {
-		current->__state = TASK_INTERRUPTIBLE;
+		set_current_state(TASK_INTERRUPTIBLE);
 		schedule();
-		current->__state = TASK_RUNNING;
+		set_current_state(TASK_RUNNING);
 	}
 	spin_unlock(&wrong_lock);
 
