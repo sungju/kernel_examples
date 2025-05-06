@@ -1,4 +1,4 @@
-obj-m += dedicated_slab.o
+obj-m += dedicated_slab.o kmalloc_rand.o
 
 export KROOT=/lib/modules/`uname -r`/build
 
